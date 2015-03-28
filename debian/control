@@ -39,10 +39,11 @@ Build-Depends: debhelper (>= 9),
                python3-all-dev,
                python3-lxml,
                libglib2.0-doc
+
 Package: systemd
 Architecture: any
-#Section: admin
-#Priority: optional
+Section: admin
+Priority: optional
 Recommends: libpam-systemd,
             dbus
 Suggests: systemd-ui
