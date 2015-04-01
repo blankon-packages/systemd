@@ -324,7 +324,7 @@ Description: GObject-based wrapper library for libudev
 Package: gir1.2-gudev-1.0
 Section: introspection
 Priority: optional
-Architecture: linux-any
+Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${gir:Depends}
