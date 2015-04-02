@@ -43,7 +43,7 @@ Build-Depends: debhelper (>= 9),
                libglib2.0-doc
 
 Package: systemd
-Architecture:lany
+Architecture: any
 Multi-Arch: foreign
 Section: admin
 Priority: optional
