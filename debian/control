@@ -1,8 +1,7 @@
 Source: systemd
 Section: admin
 Priority: optional
-Maintainer: BlankOn Developers <blankon-dev@googlegroups.com>
-XSBC-Original-Maintainer: Debian systemd Maintainers <pkg-systemd-maintainers@lists.alioth.debian.org>
+Maintainer: BlankOn Developers <BlankOn-Dev@googlegroups.com>
 Uploaders: Michael Biebl <biebl@debian.org>, Marco d'Itri <md@linux.it>, Michael Stapelberg <stapelberg@debian.org>, Sjoerd Simons <sjoerd@debian.org>, Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.9.6
 Vcs-Git: git://anonscm.debian.org/pkg-systemd/systemd.git
@@ -41,7 +40,7 @@ Build-Depends: debhelper (>= 9),
                libglib2.0-doc
 
 Package: systemd
-Architecture: any
+Architecture: linux-any
 Section: admin
 Priority: optional
 Recommends: libpam-systemd,
@@ -77,7 +76,7 @@ Description: system and service manager
  boot with init=/bin/systemd or install systemd-sysv in addition.
 
 Package: systemd-sysv
-Architecture: any
+Architecture: linux-any
 Section: admin
 Priority: extra
 Conflicts: sysvinit-core,
@@ -103,7 +102,7 @@ Description: system and service manager - SysV links
  link to systemd.
 
 Package: libpam-systemd
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: admin
 Priority: optional
@@ -131,7 +130,7 @@ Description: system and service manager - PAM module
  Packages that depend on logind functionality need to depend on libpam-systemd.
 
 Package: libsystemd0
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: libs
 Priority: optional
@@ -142,7 +141,7 @@ Description: systemd utility library
  The libsystemd0 library provides interfaces to various systemd components.
 
 Package: libsystemd-dev
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: libdevel
 Priority: optional
@@ -165,7 +164,7 @@ Description: systemd utility library - development files
  This package contains the development files.
 
 Package: libsystemd-login0
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -180,7 +179,7 @@ Description: systemd login utility library (deprecated)
  libsystemd0.
 
 Package: libsystemd-login-dev
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -195,7 +194,7 @@ Description: systemd login utility library (transitional package)
  without requiring changes to existing configure scripts.
 
 Package: libsystemd-daemon0
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -210,7 +209,7 @@ Description: systemd utility library (deprecated)
  libsystemd0.
 
 Package: libsystemd-daemon-dev
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -225,7 +224,7 @@ Description: systemd utility library (transitional package)
  without requiring changes to existing configure scripts.
 
 Package: libsystemd-journal0
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -240,7 +239,7 @@ Description: systemd journal utility library (deprecated)
  libsystemd0.
 
 Package: libsystemd-journal-dev
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -255,7 +254,7 @@ Description: systemd journal utility library (transitional package)
  without requiring changes to existing configure scripts.
 
 Package: libsystemd-id128-0
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -270,7 +269,7 @@ Description: systemd 128 bit ID utility library (deprecated)
  libsystemd0.
 
 Package: libsystemd-id128-dev
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Section: oldlibs
 Priority: extra
@@ -287,7 +286,7 @@ Description: systemd 128 bit ID utility library (transitional package)
 Package: udev
 Section: admin
 Priority: important
-Architecture: any
+Architecture: linux-any
 Multi-Arch: foreign
 Pre-Depends: debconf (>= 1.4.69) | debconf-2.0
 Depends: ${shlibs:Depends},
@@ -309,7 +308,7 @@ Description: /dev/ and hotplug management daemon
 Package: libudev1
 Section: libs
 Priority: important
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends},
@@ -320,7 +319,7 @@ Description: libudev shared library
 Package: libudev-dev
 Section: libdevel
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends},
@@ -333,7 +332,7 @@ Package: udev-udeb
 XC-Package-Type: udeb
 Section: debian-installer
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          util-linux-udeb
@@ -347,7 +346,7 @@ Package: libudev1-udeb
 Package-Type: udeb
 Section: debian-installer
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: libudev shared library
@@ -358,7 +357,7 @@ Description: libudev shared library
 Package: libgudev-1.0-0
 Section: libs
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends},
@@ -372,7 +371,7 @@ Description: GObject-based wrapper library for libudev
 Package: gir1.2-gudev-1.0
 Section: introspection
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${gir:Depends}
@@ -383,7 +382,7 @@ Description: libgudev-1.0 introspection data
 Package: libgudev-1.0-dev
 Section: libdevel
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libgudev-1.0-0 (= ${binary:Version}),
@@ -397,7 +396,7 @@ Description: libgudev-1.0 development files
 Package: python3-systemd
 Section: python
 Priority: optional
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${python3:Depends}
@@ -405,7 +404,7 @@ Description: Python 3 bindings for systemd
  This package contains Python 3 bindings for the systemd libraries.
 
 Package: systemd-dbg
-Architecture: any
+Architecture: linux-any
 Section: debug
 Priority: extra
 Depends: ${misc:Depends},
