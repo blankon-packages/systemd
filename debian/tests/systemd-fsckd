@@ -14,7 +14,7 @@ import sys
 import unittest
 from time import sleep, time
 
-GRUB_AUTOPKGTEST_CONFIG_PATH = "/etc/default/grub.d/90-autopkgtest.cfg"
+GRUB_AUTOPKGTEST_CONFIG_PATH = "/etc/default/grub.d/50-cloudimg-settings.cfg"
 TEST_AUTOPKGTEST_CONFIG_PATH = "/etc/default/grub.d/99-fsckdtest.cfg"
 
 SYSTEMD_ETC_SYSTEM_UNIT_DIR = "/etc/systemd/system/"
@@ -53,7 +53,7 @@ class FsckdTest(unittest.TestCase):
             os.rename(SYSTEM_FSCK_PATH, SAVED_FSCK_PATH)
 
         # install mock fsck and killer
-        self.install_bin(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'test', 'mocks', 'fsck'),
+        self.install_bin(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fsck'),
                          SYSTEM_FSCK_PATH)
         self.install_bin(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'process-killer'),
                          PROCESS_KILLER_PATH)
@@ -132,9 +132,9 @@ class FsckdTest(unittest.TestCase):
             self.reboot()
         else:
             self.assertFsckdStop()
-            self.assertProcessKilled()
+            self.assertTrue(self.was_running('process-killer'))
             self.assertFsckProceeded()
-            self.assertTrue(self.is_failed_unit('plymouth-start'))
+            self.assertFalse(self.is_active_unit('plymouth-start'))
             self.assertSystemRunning()
 
     def install_bin(self, source, dest):
@@ -146,9 +146,8 @@ class FsckdTest(unittest.TestCase):
     def is_active_unit(self, unit):
         '''Check that given unit is active'''
 
-        if subprocess.call(['systemctl', '-q', 'is-active', unit]) != 0:
-            return False
-        return True
+        return subprocess.call(['systemctl', 'status', unit],
+                               stdout=subprocess.PIPE) == 0
 
     def is_failed_unit(self, unit):
         '''Check that given unit failed'''
@@ -161,10 +160,8 @@ class FsckdTest(unittest.TestCase):
 
     def was_running(self, unit):
         '''Check that a given unit has been running'''
-        out = subprocess.check_output(['systemctl', 'show', '--property=ExecMainExitTimestampMonotonic', unit])
-        if b'=0' in out:
-            return False
-        return True
+        out = subprocess.check_output(['systemctl', 'show', '--property=ActiveEnterTimestampMonotonic', unit])
+        return not out.strip().endswith(b'=0')
 
     def assertFsckdStop(self):
         '''Ensure systemd-fsckd stops, which indicates no more fsck activity'''
@@ -186,12 +183,9 @@ class FsckdTest(unittest.TestCase):
             self.assertFalse(self.was_running('plymouth-start'))
 
     def assertSystemRunning(self):
-        '''Assert we started lightdm and xorg (and so, consider the system running)'''
-        out = subprocess.check_output(['ps', 'u', '-C', 'lightdm'])
-        self.assertIn(b'lightdm --session', out)
-        out = subprocess.check_output(['ps', 'u', '-C', 'Xorg'])
-        self.assertIn(b':0', out)
-        self.assertTrue(self.is_active_unit('lightdm'))
+        '''Assert that the system is running'''
+
+        self.assertTrue(self.is_active_unit('default.target'))
 
     def assertProcessKilled(self):
         '''Assert the targeted process was killed successfully'''
@@ -223,15 +217,18 @@ def enable_plymouth(enable=True):
     '''ensure plymouth is enabled in grub config (doesn't reboot)'''
     plymouth_enabled = 'splash' in open('/boot/grub/grub.cfg').read()
     if enable and not plymouth_enabled:
-        shutil.copy2(GRUB_AUTOPKGTEST_CONFIG_PATH, TEST_AUTOPKGTEST_CONFIG_PATH)
-        for line in fileinput.input([TEST_AUTOPKGTEST_CONFIG_PATH], inplace=True):
-            if line.startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                print(line[:line.rfind('"')] + ' splash quiet"\n')
-        subprocess.check_call(['update-grub'], stderr=subprocess.DEVNULL)
+        if os.path.exists(GRUB_AUTOPKGTEST_CONFIG_PATH):
+            shutil.copy2(GRUB_AUTOPKGTEST_CONFIG_PATH, TEST_AUTOPKGTEST_CONFIG_PATH)
+            for line in fileinput.input([TEST_AUTOPKGTEST_CONFIG_PATH], inplace=True):
+                if line.startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    print(line[:line.rfind('"')] + ' splash quiet"\n')
+        else:
+            with open(TEST_AUTOPKGTEST_CONFIG_PATH, 'w') as f:
+                f.write('GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0 splash quiet"\n')
     elif not enable and plymouth_enabled:
         with suppress(FileNotFoundError):
             os.remove(TEST_AUTOPKGTEST_CONFIG_PATH)
-        subprocess.check_call(['update-grub'], stderr=subprocess.DEVNULL)
+    subprocess.check_call(['update-grub'], stderr=subprocess.DEVNULL)
 
 
 def boot_with_systemd_distro():
@@ -251,6 +248,9 @@ def getAllTests(unitTestClass):
 # we append the previous global return code (0 or 1) to it.
 # Example: ADT_REBOOT_MARK=test_foo:0
 if __name__ == '__main__':
+    if os.path.exists('/run/initramfs/fsck-root'):
+        print('SKIP: root file system is being checked by initramfs already')
+        sys.exit(0)
 
     all_tests = getAllTests(FsckdTest)
     reboot_marker = os.getenv('ADT_REBOOT_MARK')

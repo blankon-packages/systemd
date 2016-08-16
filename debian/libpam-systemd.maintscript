@@ -1,1 +1,0 @@
-rm_conffile /etc/init/systemd-logind.conf 204-9ubuntu1~ libpam-systemd

@@ -62,6 +62,8 @@
 /dev/null /lib/systemd/system/sendsigs.service
 /dev/null /lib/systemd/system/halt.service
 /dev/null /lib/systemd/system/reboot.service
+/dev/null /lib/systemd/system/rc.service
+/dev/null /lib/systemd/system/rcS.service
 
 # The motd SysV init script is no longer required to create the dynamic part of
 # /etc/motd to display the uname information as pam_exec is used for that now.
@@ -75,7 +77,6 @@
 /dev/null /lib/systemd/system/bootlogs.service
 
 # Enable Debian specific units
-/lib/systemd/system/debian-fixup.service /lib/systemd/system/sysinit.target.wants/debian-fixup.service
 /lib/systemd/system/getty-static.service /lib/systemd/system/getty.target.wants/getty-static.service
 
 # Compat symlink
