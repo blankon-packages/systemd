@@ -51,7 +51,7 @@ Build-Depends: debhelper (>= 9.20160114),
                python3-lxml
 
 Package: systemd
-Architecture: linux-any
+Architecture: any
 Multi-Arch: foreign
 Section: admin
 Priority: important
